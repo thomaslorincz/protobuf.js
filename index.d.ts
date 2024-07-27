@@ -2121,6 +2121,29 @@ export namespace util {
      */
     let toJSONOptions: IConversionOptions;
 
+    /**
+     * Fetches the contents of a file.
+     * @param filename File path or url
+     * @param options Fetch options
+     * @param callback Callback function
+     */
+    function fetch(filename: string, options: IFetchOptions, callback: FetchCallback): void;
+
+    /**
+     * Fetches the contents of a file.
+     * @param path File path or url
+     * @param callback Callback function
+     */
+    function fetch(path: string, callback: FetchCallback): void;
+
+    /**
+     * Fetches the contents of a file.
+     * @param path File path or url
+     * @param [options] Fetch options
+     * @returns Promise
+     */
+    function fetch(path: string, options?: IFetchOptions): Promise<(string|Uint8Array)>;
+
     /** Node's fs module if available. */
     let fs: { [k: string]: any };
 
@@ -2368,29 +2391,6 @@ export namespace util {
         function readDoubleBE(buf: Uint8Array, pos: number): number;
     }
 
-    /**
-     * Fetches the contents of a file.
-     * @param filename File path or url
-     * @param options Fetch options
-     * @param callback Callback function
-     */
-    function fetch(filename: string, options: IFetchOptions, callback: FetchCallback): void;
-
-    /**
-     * Fetches the contents of a file.
-     * @param path File path or url
-     * @param callback Callback function
-     */
-    function fetch(path: string, callback: FetchCallback): void;
-
-    /**
-     * Fetches the contents of a file.
-     * @param path File path or url
-     * @param [options] Fetch options
-     * @returns Promise
-     */
-    function fetch(path: string, options?: IFetchOptions): Promise<(string|Uint8Array)>;
-
     /** A minimal path module to resolve Unix, Windows and URL paths alike. */
     namespace path {
 
@@ -2455,6 +2455,23 @@ export namespace util {
          */
         function write(string: string, buffer: Uint8Array, offset: number): number;
     }
+}
+
+/**
+ * Node-style callback as used by {@link util.fetch}.
+ * @param error Error, if any, otherwise `null`
+ * @param [contents] File contents, if there hasn't been an error
+ */
+type FetchCallback = (error: Error, contents?: string) => void;
+
+/** Options as used by {@link util.fetch}. */
+export interface IFetchOptions {
+
+    /** Whether expecting a binary response */
+    binary?: boolean;
+
+    /** If `true`, forces the use of XMLHttpRequest */
+    xhr?: boolean;
 }
 
 /**
@@ -2700,23 +2717,6 @@ type Codegen = (formatStringOrScope?: (string|{ [k: string]: any }), ...formatPa
  * @param args Arguments
  */
 type EventEmitterListener = (...args: any[]) => void;
-
-/**
- * Node-style callback as used by {@link util.fetch}.
- * @param error Error, if any, otherwise `null`
- * @param [contents] File contents, if there hasn't been an error
- */
-type FetchCallback = (error: Error, contents?: string) => void;
-
-/** Options as used by {@link util.fetch}. */
-export interface IFetchOptions {
-
-    /** Whether expecting a binary response */
-    binary?: boolean;
-
-    /** If `true`, forces the use of XMLHttpRequest */
-    xhr?: boolean;
-}
 
 /**
  * An allocator as used by {@link util.pool}.
